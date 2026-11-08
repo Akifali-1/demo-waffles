@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
 <title>DEMO Waffles — India's No. 1 Waffle Concept</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -31,13 +31,25 @@
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+  width: 100%;
+}
 body {
   background: var(--cream);
   color: var(--ink);
   font-family: var(--display);
   overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+  position: relative;
   -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+main, section, header, footer {
+  max-width: 100vw;
+  overflow-x: clip;
 }
 a { color: inherit; text-decoration: none; }
 button, input { font: inherit; color: inherit; border: none; background: none; }
@@ -46,16 +58,18 @@ img, video { max-width: 100%; display: block; }
 .wrap {
   max-width: 1340px;
   margin-inline: auto;
-  padding-inline: clamp(1.25rem, 4vw, 3rem);
+  padding-inline: clamp(1rem, 3.5vw, 3rem);
+  width: 100%;
 }
 
-/* Floating Brown Pill Navbar (Inspired by Reference Images 5–8) */
+/* ==================== FLOATING PILL NAVBAR ==================== */
 .nav-wrap {
   position: sticky;
   top: 14px;
-  z-index: 200;
-  padding-inline: clamp(1rem, 3vw, 2.5rem);
+  z-index: 250;
+  padding-inline: clamp(0.75rem, 3vw, 2.5rem);
   pointer-events: none;
+  width: 100%;
 }
 .nav-bar {
   max-width: 1280px;
@@ -103,6 +117,8 @@ img, video { max-width: 100%; display: block; }
   cursor: pointer;
   transform: scale(1.12);
   box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+  user-select: none;
+  flex-shrink: 0;
 }
 .brand-crest small {
   display: block;
@@ -123,26 +139,171 @@ img, video { max-width: 100%; display: block; }
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
+  flex-shrink: 0;
+  border: 2px solid transparent;
+  transition: transform 0.15s ease, background 0.2s ease;
 }
+.cart-pill:active { transform: scale(0.95); }
 .cart-count {
   background: var(--cocoa-deep);
   color: var(--cream);
   padding: 0.08rem 0.45rem;
   border-radius: 99px;
   font-size: 0.72rem;
+  font-weight: 800;
+}
+
+/* Mobile Nav Controls */
+.mobile-menu-btn {
+  display: none;
+  align-items: center;
+  gap: 0.45rem;
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--cream);
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.84rem;
+  cursor: pointer;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+}
+.mobile-menu-icon {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  width: 14px;
+}
+.mobile-menu-icon span {
+  display: block;
+  height: 2px;
+  background: var(--cream);
+  border-radius: 2px;
+}
+.mobile-cart-btn {
+  display: none;
+}
+
+/* Mobile Drawer Menu Modal */
+.mobile-nav-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(36, 17, 10, 0.68);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 350;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.mobile-nav-backdrop.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+.mobile-nav-sheet {
+  background: var(--cream);
+  border-bottom: 3.5px solid var(--cocoa);
+  border-radius: 0 0 28px 28px;
+  padding: 1.25rem 1.25rem 1.75rem;
+  box-shadow: 0 16px 36px rgba(36, 17, 10, 0.35);
+  transform: translateY(-100%);
+  transition: transform 0.35s var(--ease);
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.mobile-nav-backdrop.open .mobile-nav-sheet {
+  transform: translateY(0);
+}
+.mobile-nav-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 0.75rem;
+  border-bottom: 1.5px dashed rgba(58, 29, 18, 0.25);
+}
+.mobile-nav-close {
+  background: var(--cocoa);
+  color: var(--cream);
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 1.15rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+.mobile-nav-list {
+  list-style: none;
+  display: grid;
+  gap: 0.6rem;
+}
+.mobile-nav-link {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.85rem 1.15rem;
+  border-radius: 16px;
+  background: var(--milk);
+  color: var(--cocoa);
+  font-weight: 800;
+  font-size: 1.05rem;
+  border: 1.5px solid rgba(58, 29, 18, 0.18);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.mobile-nav-link.active,
+.mobile-nav-link:hover {
+  background: var(--batter);
+  color: var(--cocoa-deep);
+  border-color: var(--cocoa-deep);
+  box-shadow: 3px 3px 0 var(--cocoa);
+}
+
+@media (max-width: 860px) {
+  .nav-wrap {
+    top: 8px;
+    padding-inline: 0.75rem;
+  }
+  .nav-bar {
+    padding: 0.3rem 0.65rem;
+  }
+  .nav-links {
+    display: none !important;
+  }
+  .mobile-menu-btn {
+    display: inline-flex;
+    padding: 0.38rem 0.75rem;
+    font-size: 0.82rem;
+  }
+  .mobile-cart-btn {
+    display: inline-flex;
+    padding: 0.38rem 0.75rem;
+    font-size: 0.82rem;
+  }
+  .brand-crest {
+    transform: scale(0.88);
+    font-size: 0.92rem;
+    padding: 0.28rem 0.75rem;
+    margin-block: -4px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.18);
+  }
 }
 
 /* SPA Page Views */
 .page-view { display: none; }
 .page-view.active { display: block; }
 
-/* ==================== SECTION 1: SEAMLESS HERO (WAFFLE ALWAYS IN FRONT) ==================== */
+/* ==================== SECTION 1: SEAMLESS HERO ==================== */
 .hero-stage {
   background: var(--batter);
   min-height: 100svh;
   margin-top: -64px;
   padding-top: 96px;
-  padding-bottom: 4rem;
+  padding-bottom: 3.5rem;
   position: relative;
   overflow: hidden;
   display: flex;
@@ -167,7 +328,7 @@ img, video { max-width: 100%; display: block; }
   font-weight: 900;
   font-stretch: 75%;
   text-transform: uppercase;
-  font-size: clamp(5.5rem, 20vw, 19rem);
+  font-size: clamp(4.5rem, 19vw, 19rem);
   line-height: 0.78;
   letter-spacing: -0.04em;
   color: rgba(58, 29, 18, 0.11);
@@ -177,7 +338,7 @@ img, video { max-width: 100%; display: block; }
   transform: translateY(-25%);
 }
 
-/* Centerpiece Video Container (z-index: 5 — NEVER covered by text) */
+/* Centerpiece Video Container (z-index: 5) */
 .hero-center-video-wrap {
   position: relative;
   z-index: 5;
@@ -192,7 +353,6 @@ img, video { max-width: 100%; display: block; }
   position: relative;
   overflow: hidden;
   background: var(--batter);
-  /* Keeps top pour stream sharp, feathers outer edges into #FCC425 & hides Veo watermark */
   mask-image: radial-gradient(ellipse 76% 86% at 50% 36%, #000 66%, transparent 97%);
   -webkit-mask-image: radial-gradient(ellipse 76% 86% at 50% 36%, #000 66%, transparent 97%);
 }
@@ -250,20 +410,93 @@ img, video { max-width: 100%; display: block; }
   border: 2.5px solid var(--cocoa-deep);
   box-shadow: 4px 4px 0 var(--cocoa-deep);
   cursor: pointer;
-  transition: transform 0.25s var(--ease), background 0.25s;
+  transition: transform 0.18s var(--ease), box-shadow 0.18s var(--ease), background 0.2s;
+  text-decoration: none;
 }
 .btn-pill:hover {
-  transform: translate(-2px, -3px);
-  background: var(--cocoa-deep);
-  color: var(--batter);
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--cocoa-deep);
+}
+.btn-pill:active {
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0 var(--cocoa-deep);
 }
 
-/* ==================== TILTED RIBBON TICKER (IMAGE 6 & 9 STYLE) ==================== */
+@media (max-width: 768px) {
+  .hero-stage {
+    min-height: auto;
+    margin-top: -54px;
+    padding-top: 72px;
+    padding-bottom: 2.2rem;
+    gap: 1.25rem;
+  }
+  .hero-back-text {
+    padding-top: 1rem;
+  }
+  .hero-back-text .giant-word {
+    font-size: clamp(3.6rem, 16.5vw, 5.5rem);
+    line-height: 0.82;
+  }
+  .hero-back-text .giant-word.solid-top {
+    transform: translateY(-18%);
+  }
+  .hero-center-video-wrap {
+    width: min(92vw, 390px);
+    aspect-ratio: 16 / 10.2;
+    margin: 0 auto;
+  }
+  /* Floating stickers framed safely without overlapping text or screen edges */
+  .hero-sticker.right {
+    top: 19%;
+    right: 0.85rem;
+    padding: 0.5rem 0.8rem;
+    transform: scale(0.72) rotate(4deg);
+    transform-origin: top right;
+  }
+  .hero-sticker.left {
+    top: 48%;
+    bottom: auto;
+    left: 0.75rem;
+    padding: 0.5rem 0.8rem;
+    transform: scale(0.72) rotate(-5deg);
+    transform-origin: top left;
+  }
+  .hero-bottom-bar {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+    gap: 1rem;
+    margin-top: 0.5rem;
+  }
+  .hero-bottom-bar > div:first-child {
+    max-width: 100% !important;
+  }
+  .hero-bottom-bar p {
+    font-size: clamp(1.3rem, 5.4vw, 1.65rem) !important;
+    text-align: center;
+  }
+  .hero-bottom-bar div:last-child {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    width: 100%;
+  }
+  .hero-bottom-bar .btn-pill {
+    width: 100%;
+    justify-content: center;
+    padding: 0.85rem 1.4rem;
+    font-size: 0.95rem;
+  }
+}
+
+/* ==================== TILTED RIBBON TICKER ==================== */
 .tilted-ribbon-wrap {
   position: relative;
   z-index: 15;
   margin-block: -1.6rem;
-  transform: rotate(-1.8deg) scale(1.03);
+  transform: rotate(-1.8deg);
+  width: 106%;
+  margin-left: -3%;
   background: var(--cream-band);
   border-block: 3px solid var(--cocoa);
   padding-block: 0.95rem;
@@ -272,7 +505,9 @@ img, video { max-width: 100%; display: block; }
 }
 .tilted-ribbon-wrap.gold {
   background: var(--batter);
-  transform: rotate(1.6deg) scale(1.03);
+  transform: rotate(1.6deg);
+  width: 106%;
+  margin-left: -3%;
 }
 .ribbon-track {
   display: flex;
@@ -286,7 +521,7 @@ img, video { max-width: 100%; display: block; }
   padding-right: 2.2rem;
   font-family: var(--serif-editorial);
   font-weight: 800;
-  font-size: clamp(1.35rem, 2.4vw, 2rem);
+  font-size: clamp(1.2rem, 2.4vw, 2rem);
   color: var(--cocoa);
   white-space: nowrap;
 }
@@ -296,10 +531,26 @@ img, video { max-width: 100%; display: block; }
 }
 .tilted-ribbon-wrap.gold .star-dot { color: var(--cocoa); }
 
-/* ==================== SECTION 2: "THE ORIGINAL WAFF-WICH" EDITORIAL INTRO ==================== */
+@media (max-width: 768px) {
+  .tilted-ribbon-wrap {
+    margin-block: -0.8rem;
+    padding-block: 0.65rem;
+    transform: rotate(-1.4deg) scale(1.02);
+  }
+  .tilted-ribbon-wrap.gold {
+    transform: rotate(1.4deg) scale(1.02);
+  }
+  .ribbon-group {
+    font-size: 1.15rem;
+    gap: 1.35rem;
+    padding-right: 1.35rem;
+  }
+}
+
+/* ==================== SECTION 2: "THE ORIGINAL WAFF-WICH" ==================== */
 .original-section {
   background: var(--cream);
-  padding-block: clamp(6rem, 11vw, 9.5rem);
+  padding-block: clamp(4rem, 10vw, 9.5rem);
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -308,7 +559,7 @@ img, video { max-width: 100%; display: block; }
   font-family: var(--serif-editorial);
   font-weight: 800;
   color: var(--terracotta);
-  font-size: clamp(3rem, 7.5vw, 6.2rem);
+  font-size: clamp(2.8rem, 7.5vw, 6.2rem);
   line-height: 0.98;
   display: inline-flex;
   flex-direction: column;
@@ -326,10 +577,33 @@ img, video { max-width: 100%; display: block; }
   line-height: 1.6;
 }
 
-/* ==================== SECTION 3: "INDIA'S NO 1 WAFFLE BRAND" (IMAGES 5 & 6) ==================== */
+@media (max-width: 768px) {
+  .original-section {
+    padding-block: 3.5rem 3rem;
+  }
+  .stagger-heading {
+    align-items: center;
+    text-align: center;
+    font-size: clamp(2.3rem, 9.5vw, 3.2rem);
+  }
+  .stagger-heading .line-1,
+  .stagger-heading .line-2,
+  .stagger-heading .line-3 {
+    margin-left: 0 !important;
+    text-align: center;
+    display: block;
+  }
+  .original-copy {
+    padding-inline: 0.5rem;
+    font-size: 0.98rem;
+    margin-top: 1.25rem;
+  }
+}
+
+/* ==================== SECTION 3: "INDIA'S NO 1 WAFFLE BRAND" ==================== */
 .no1-brand-section {
   background: var(--batter);
-  padding-block: clamp(6rem, 11vw, 10rem);
+  padding-block: clamp(4rem, 10vw, 10rem);
   position: relative;
   overflow: hidden;
 }
@@ -342,7 +616,7 @@ img, video { max-width: 100%; display: block; }
   font-family: var(--serif-editorial);
   font-weight: 800;
   color: var(--cocoa);
-  font-size: clamp(3.2rem, 8.2vw, 7.2rem);
+  font-size: clamp(3rem, 8.2vw, 7.2rem);
   line-height: 0.95;
 }
 .no1-headline .row-top {
@@ -370,6 +644,7 @@ img, video { max-width: 100%; display: block; }
   min-height: 430px;
   display: grid;
   place-items: center;
+  overflow: visible;
 }
 .main-flying-waffle {
   width: min(85vw, 480px);
@@ -408,26 +683,77 @@ img, video { max-width: 100%; display: block; }
   font-family: var(--serif-script);
   font-style: italic;
   font-size: clamp(1.5rem, 2.5vw, 2.2rem);
-  color: var(--milk);
-  text-shadow: 1px 2px 0 rgba(58,29,18,0.25);
-  line-height: 1.2;
+  line-height: 1.15;
+  color: var(--terracotta);
   margin-bottom: 1.8rem;
 }
 
-/* ==================== SECTION 4: "MEET THE SHOW-STOPPER" SCROLL-PINNED SWITCHER (IMAGES 7 & 8) ==================== */
+@media (max-width: 768px) {
+  .no1-brand-section {
+    padding-block: 3.5rem 3rem;
+  }
+  .no1-headline {
+    font-size: clamp(2.4rem, 9.8vw, 3.4rem);
+    text-align: center;
+  }
+  .no1-headline .row-top {
+    flex-direction: column;
+    gap: 0.15rem;
+    align-items: center;
+    text-align: center;
+  }
+  .no1-headline .row-bot {
+    padding-left: 0 !important;
+    text-align: center;
+    margin-top: 0.1rem;
+  }
+  .no1-grid {
+    gap: 2rem;
+  }
+  .flying-waffle-stage {
+    min-height: 290px;
+    overflow: hidden;
+  }
+  .main-flying-waffle {
+    width: min(78vw, 280px);
+    box-shadow: 10px 12px 0 var(--cocoa);
+    transform: rotate(-8deg);
+  }
+  .floating-cookie {
+    padding: 0.45rem 0.85rem;
+    font-size: 0.82rem;
+    border-radius: 10px;
+  }
+  .floating-cookie.c1 { top: 6%; left: 2%; transform: rotate(-14deg); }
+  .floating-cookie.c2 { bottom: 8%; right: 4%; transform: rotate(12deg); }
+  .floating-cookie.c3 { display: none; }
+  .no1-story-copy {
+    text-align: center;
+    padding-inline: 0.5rem;
+  }
+  .no1-script-quote {
+    font-size: 1.45rem;
+    margin-bottom: 1.4rem;
+  }
+  .no1-story-copy .btn-pill {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ==================== SECTION 4: "MEET THE SHOW-STOPPER" ==================== */
 .showstopper-section {
   background: var(--cream);
-  min-height: 100svh;
-  padding-top: max(84px, 10vh);
-  padding-bottom: 1.5rem;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
+  padding-block: clamp(3rem, 6vw, 5rem);
   position: relative;
   overflow: hidden;
-}
-.showstopper-section .wrap {
-  transform: translateY(-20px);
+  width: 100%;
+  max-width: 100vw;
 }
 .showstopper-header {
   text-align: center;
@@ -460,7 +786,6 @@ img, video { max-width: 100%; display: block; }
   .showstopper-stage { grid-template-columns: 0.95fr 1.05fr; }
 }
 
-/* Left Morphing Product Visual with Decorative Scallop Aura */
 .showstopper-visual-box {
   position: relative;
   aspect-ratio: 1 / 1;
@@ -498,7 +823,6 @@ img, video { max-width: 100%; display: block; }
   transition: transform 0.55s var(--ease), opacity 0.35s ease;
 }
 
-/* Right Interactive / Scroll-Driven Category List */
 .showstopper-list {
   list-style: none;
   display: flex;
@@ -550,10 +874,87 @@ img, video { max-width: 100%; display: block; }
   margin-top: 0.6rem;
 }
 
-/* ==================== SECTION 5: REWARDS & FRANCHISE SLIDE-IN SECTIONS ==================== */
+/* Mobile Category Pill Switcher & Desc Card */
+.showstopper-mobile-desc { display: none; }
+
+@media (max-width: 860px) {
+  .showstopper-section {
+    min-height: auto;
+    padding-block: 3.5rem 2.5rem;
+  }
+  .showstopper-stage {
+    display: flex;
+    flex-direction: column;
+    gap: 1.35rem;
+  }
+  .showstopper-visual-box {
+    max-width: 250px;
+    width: 250px;
+  }
+  .showstopper-img-card {
+    border-radius: 22px;
+    box-shadow: 8px 10px 0 var(--cocoa);
+  }
+  /* Category list turns into smooth horizontal touch pill carousel */
+  .showstopper-list {
+    flex-direction: row;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 0.55rem;
+    padding-inline: 0.5rem;
+    padding-bottom: 0.5rem;
+    width: 100%;
+  }
+  .showstopper-list::-webkit-scrollbar { display: none; }
+  .show-item {
+    flex: 0 0 auto;
+    background: var(--milk);
+    border: 2px solid var(--cocoa);
+    border-radius: 999px;
+    padding: 0.55rem 1.15rem;
+    white-space: nowrap;
+    transform: none !important;
+  }
+  .show-item.active {
+    background: var(--batter);
+    border-color: var(--cocoa);
+    box-shadow: 4px 4px 0 var(--cocoa);
+  }
+  .show-item-title {
+    font-size: 0.96rem;
+    color: var(--cocoa);
+  }
+  .show-item.active .show-item-title {
+    color: var(--cocoa-deep);
+  }
+  .show-item-desc {
+    display: none;
+  }
+  .showstopper-mobile-desc {
+    display: block;
+    background: var(--milk);
+    border: 2px solid var(--cocoa);
+    border-radius: 18px;
+    padding: 1rem 1.25rem;
+    box-shadow: 5px 5px 0 var(--cocoa);
+    margin-inline: 0.5rem;
+    font-size: 0.92rem;
+    line-height: 1.5;
+    color: var(--cocoa);
+    text-align: center;
+  }
+  .scroll-progress-hint {
+    text-align: center;
+    font-size: 0.68rem;
+    margin-top: 0.5rem;
+  }
+}
+
+/* ==================== SECTION 5: REWARDS & FRANCHISE SLIDE-IN ==================== */
 .rewards-section {
   background: var(--cream-band);
-  padding-block: clamp(5rem, 9vw, 8rem);
+  padding-block: clamp(4rem, 8vw, 8rem);
   overflow: hidden;
   border-top: 2px solid rgba(58,29,18,0.12);
 }
@@ -596,10 +997,27 @@ img, video { max-width: 100%; display: block; }
   object-fit: cover;
 }
 
+@media (max-width: 768px) {
+  .rewards-section {
+    padding-block: 3.5rem 3rem;
+  }
+  .split-showcase {
+    gap: 2rem;
+  }
+  .visual-collage-card {
+    border-radius: 24px;
+    box-shadow: 8px 8px 0 var(--cocoa);
+  }
+  .split-showcase .btn-pill {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
 /* ==================== SECTION 6: "FEED YOUR FEED" SOCIAL REELS ==================== */
 .feed-section {
   background: var(--batter);
-  padding-block: clamp(5rem, 9vw, 8rem);
+  padding-block: clamp(4rem, 8vw, 8rem);
   text-align: center;
 }
 .feed-grid {
@@ -627,9 +1045,30 @@ img, video { max-width: 100%; display: block; }
 }
 .feed-card:hover img { transform: scale(1.08); }
 
-/* ==================== OTHER PAGES (FULL MENU, BUILDER, STORY, FRANCHISE) ==================== */
-.page-pad { padding-block: clamp(4.5rem, 8vw, 7rem); }
-.category-bar { display: flex; flex-wrap: wrap; gap: 0.65rem; margin-block: 2rem 2.5rem; }
+@media (max-width: 768px) {
+  .feed-section {
+    padding-block: 3.5rem 3rem;
+  }
+  .feed-grid {
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+  .feed-card {
+    border-radius: 18px;
+    box-shadow: 5px 5px 0 var(--cocoa);
+  }
+}
+
+/* ==================== OTHER PAGES (MENU, BUILDER, STORY, FRANCHISE) ==================== */
+.page-pad {
+  padding-block: clamp(4.5rem, 8vw, 7rem);
+}
+.category-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-block: 2rem 2.5rem;
+}
 .cat-btn {
   padding: 0.65rem 1.35rem;
   border-radius: 999px;
@@ -637,12 +1076,16 @@ img, video { max-width: 100%; display: block; }
   background: var(--milk);
   font-weight: 700;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
-.cat-btn.active { background: var(--batter); box-shadow: 3px 3px 0 var(--cocoa); }
+.cat-btn.active {
+  background: var(--batter);
+  box-shadow: 3px 3px 0 var(--cocoa);
+}
 
 .menu-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
   gap: 2rem;
 }
 .menu-card {
@@ -684,7 +1127,7 @@ img, video { max-width: 100%; display: block; }
 }
 .opt-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   gap: 0.65rem;
   margin-block: 0.75rem 1.5rem;
 }
@@ -695,13 +1138,84 @@ img, video { max-width: 100%; display: block; }
   border-radius: 16px;
   text-align: left;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 .opt-chip[aria-pressed="true"] {
   background: var(--batter);
   box-shadow: 3px 3px 0 var(--cocoa);
 }
 
-/* Footer with Angled Ribbon Transition (Image 9) */
+/* Mobile Sticky Action Bar for Builder */
+.mobile-builder-sticky { display: none; }
+
+@media (max-width: 768px) {
+  .page-pad {
+    padding-top: 5.5rem;
+    padding-bottom: 3rem;
+  }
+  .category-bar {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    flex-wrap: nowrap;
+    gap: 0.5rem;
+    margin-block: 1.25rem 1.75rem;
+    padding-bottom: 0.4rem;
+  }
+  .category-bar::-webkit-scrollbar { display: none; }
+  .cat-btn {
+    flex: 0 0 auto;
+    padding: 0.5rem 1rem;
+    font-size: 0.88rem;
+    white-space: nowrap;
+  }
+  .menu-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .menu-card {
+    padding: 1.1rem;
+    border-radius: 22px;
+    box-shadow: 5px 5px 0 var(--cocoa);
+  }
+  .menu-card-img {
+    aspect-ratio: 16 / 10;
+  }
+  .builder-grid {
+    gap: 1.5rem;
+    margin-top: 1.25rem;
+  }
+  .builder-preview {
+    padding: 1.15rem;
+    border-radius: 22px;
+    box-shadow: 6px 6px 0 var(--batter);
+  }
+  .opt-grid {
+    grid-template-columns: 1fr;
+  }
+  .opt-chip {
+    min-height: 48px;
+    font-size: 0.95rem;
+    padding: 0.65rem 1rem;
+  }
+  .mobile-builder-sticky {
+    position: sticky;
+    bottom: 12px;
+    z-index: 150;
+    background: var(--cocoa-deep);
+    color: var(--milk);
+    border: 2.5px solid var(--batter);
+    border-radius: 999px;
+    padding: 0.65rem 1.1rem;
+    box-shadow: 0 10px 24px rgba(36, 17, 10, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 1.5rem;
+  }
+}
+
+/* ==================== FOOTER ==================== */
 .footer {
   background: var(--cocoa-deep);
   color: var(--cream);
@@ -724,15 +1238,34 @@ img, video { max-width: 100%; display: block; }
 .footer a { opacity: 0.85; cursor: pointer; }
 .footer a:hover { color: var(--batter); opacity: 1; }
 
-/* Cart Drawer & Toast */
+@media (max-width: 768px) {
+  .footer {
+    padding-block: 3.5rem 2.5rem;
+    text-align: center;
+  }
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .footer .brand-crest {
+    margin-inline: auto;
+  }
+  .footer p {
+    margin-inline: auto;
+  }
+}
+
+/* ==================== SLIDE-OVER BAG DRAWER ==================== */
 .drawer-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(36,17,10,0.55);
+  background: rgba(36,17,10,0.68);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   z-index: 400;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.3s;
+  transition: opacity 0.3s ease;
 }
 .drawer-backdrop.open { opacity: 1; pointer-events: auto; }
 .cart-drawer {
@@ -740,21 +1273,30 @@ img, video { max-width: 100%; display: block; }
   top: 0;
   right: 0;
   bottom: 0;
-  width: min(400px, 92vw);
+  width: min(420px, 100vw);
   background: var(--cream);
   border-left: 3px solid var(--cocoa);
   z-index: 410;
   transform: translateX(100%);
   transition: transform 0.35s var(--ease);
-  padding: 1.5rem;
+  padding: 1.5rem 1.25rem;
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
 }
 .drawer-backdrop.open .cart-drawer { transform: translateX(0); }
 
+@media (max-width: 480px) {
+  .cart-drawer {
+    width: 100vw;
+    border-left: none;
+    padding: 1.2rem 1rem;
+  }
+}
+
 .toast {
   position: fixed;
-  bottom: 28px;
+  bottom: 24px;
   left: 50%;
   transform: translate(-50%, 20px);
   background: var(--cocoa-deep);
@@ -763,10 +1305,14 @@ img, video { max-width: 100%; display: block; }
   padding: 0.75rem 1.4rem;
   border-radius: 999px;
   font-weight: 700;
+  font-size: 0.92rem;
   opacity: 0;
   pointer-events: none;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
   z-index: 500;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  max-width: 90vw;
+  text-align: center;
 }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 </style>
@@ -776,6 +1322,15 @@ img, video { max-width: 100%; display: block; }
 <!-- Floating Pill Navigation -->
 <div class="nav-wrap">
   <header class="nav-bar">
+    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open Navigation Menu">
+      <div class="mobile-menu-icon">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <span>Menu</span>
+    </button>
+
     <ul class="nav-links">
       <li><button class="nav-btn active" data-route="home">Home</button></li>
       <li><button class="nav-btn" data-route="craft">Our Story</button></li>
@@ -792,21 +1347,50 @@ img, video { max-width: 100%; display: block; }
       <li><button class="nav-btn" data-route="builder">Waffle Lab</button></li>
       <li><button class="nav-btn" data-route="locations">Franchise</button></li>
       <li>
-        <button class="cart-pill" id="openCartBtn">
+        <button class="cart-pill openCartBtn">
           <span>Bag</span>
-          <span class="cart-count" id="cartCount">1</span>
+          <span class="cart-count cartCount">1</span>
         </button>
       </li>
     </ul>
+
+    <button class="cart-pill mobile-cart-btn openCartBtn" aria-label="Open Bag">
+      <span>Bag</span>
+      <span class="cart-count cartCount">1</span>
+    </button>
   </header>
+</div>
+
+<!-- Mobile Navigation Drawer Modal -->
+<div class="mobile-nav-backdrop" id="mobileNavBackdrop">
+  <div class="mobile-nav-sheet">
+    <div class="mobile-nav-header">
+      <div class="brand-crest" data-route="home" style="transform:none;box-shadow:none">
+        <small>THE</small>DEMO<br>Waffle<small>CO.</small>
+      </div>
+      <button class="mobile-nav-close" id="mobileNavClose" aria-label="Close menu">✕</button>
+    </div>
+    <ul class="mobile-nav-list">
+      <li><button class="mobile-nav-link active" data-route="home"><span>🏠 Home</span><span>→</span></button></li>
+      <li><button class="mobile-nav-link" data-route="craft"><span>📖 Our Story</span><span>→</span></button></li>
+      <li><button class="mobile-nav-link" data-route="menu"><span>🧇 Full Menu</span><span>→</span></button></li>
+      <li><button class="mobile-nav-link" data-route="builder"><span>🧪 Waffle Lab</span><span>→</span></button></li>
+      <li><button class="mobile-nav-link" data-route="locations"><span>📍 Franchise & Stores</span><span>→</span></button></li>
+    </ul>
+    <div style="margin-top:0.5rem">
+      <button class="btn-pill openCartBtn" style="width:100%;justify-content:center;background:var(--batter);color:var(--cocoa-deep)">
+        View Bag (<span class="cartCount">1</span> Items)
+      </button>
+    </div>
+  </div>
 </div>
 
 <main>
 
-  <!-- ==================== PAGE 1: LONG SCROLL-ANIMATED HOME PAGE ==================== -->
+  <!-- ==================== PAGE 1: HOME PAGE ==================== -->
   <div class="page-view active" id="page-home">
 
-    <!-- 1. HERO SECTION (WAFFLE STRICTLY IN FRONT, ZERO TEXT CUTOFF, SMOOTH CROSSFADE LOOP) -->
+    <!-- 1. HERO SECTION -->
     <section class="hero-stage" id="heroStage">
       <div class="hero-sticker right">
         <span style="font-family:var(--mono);font-size:0.7rem;display:block;text-transform:uppercase">Hot Picks Starting</span>
@@ -818,7 +1402,7 @@ img, video { max-width: 100%; display: block; }
         <strong style="font-size:1.05rem">100% Eggless Crunch</strong>
       </div>
 
-      <!-- Background Text stays strictly BEHIND the waffle (z-index: 1) -->
+      <!-- Background Text strictly BEHIND the waffle (z-index: 1) -->
       <div class="hero-back-text">
         <span class="giant-word solid-top">CRISPY</span>
         <span class="giant-word">WAFFLES</span>
@@ -863,29 +1447,27 @@ img, video { max-width: 100%; display: block; }
       </div>
     </section>
 
-    <!-- TILTED MARQUEE RIBBON (EXACT MATCH TO IMAGE 6) -->
-    <div class="tilted-ribbon-wrap gold">
+    <!-- Tilted Ribbon Ticker 1 -->
+    <div class="tilted-ribbon-wrap">
       <div class="ribbon-track" data-dir="-1">
         <div class="ribbon-group">
-          <span>Waff-wich</span><i class="star-dot">✹</i>
-          <span>Sundaes</span><i class="star-dot">✹</i>
-          <span>Cakes</span><i class="star-dot">✹</i>
-          <span>Ice-cream Waff-wich</span><i class="star-dot">✹</i>
-          <span>Coffee & Shakes</span><i class="star-dot">✹</i>
-          <span>Waffle Crisps</span><i class="star-dot">✹</i>
+          <span>Sundae Treats</span><span class="star-dot">✦</span>
+          <span>Mini Bites</span><span class="star-dot">✦</span>
+          <span>Dark Cocoa Pour</span><span class="star-dot">✦</span>
+          <span>100% Eggless Crunch</span><span class="star-dot">✦</span>
+          <span>Lotus Biscoff Crunch</span><span class="star-dot">✦</span>
         </div>
         <div class="ribbon-group">
-          <span>Waff-wich</span><i class="star-dot">✹</i>
-          <span>Sundaes</span><i class="star-dot">✹</i>
-          <span>Cakes</span><i class="star-dot">✹</i>
-          <span>Ice-cream Waff-wich</span><i class="star-dot">✹</i>
-          <span>Coffee & Shakes</span><i class="star-dot">✹</i>
-          <span>Waffle Crisps</span><i class="star-dot">✹</i>
+          <span>Sundae Treats</span><span class="star-dot">✦</span>
+          <span>Mini Bites</span><span class="star-dot">✦</span>
+          <span>Dark Cocoa Pour</span><span class="star-dot">✦</span>
+          <span>100% Eggless Crunch</span><span class="star-dot">✦</span>
+          <span>Lotus Biscoff Crunch</span><span class="star-dot">✦</span>
         </div>
       </div>
     </div>
 
-    <!-- 3. "INDIA'S NO 1 WAFFLE BRAND" (WAFFLE SLIDING IN FROM LEFT — IMAGES 5 & 6) -->
+    <!-- 3. "INDIA'S NO 1 WAFFLE BRAND" -->
     <section class="no1-brand-section" id="no1Section">
       <div class="wrap">
         <div class="no1-headline-wrap">
@@ -899,7 +1481,7 @@ img, video { max-width: 100%; display: block; }
         </div>
 
         <div class="no1-grid">
-          <!-- Left: Waffle & Floating Biscoff Cookies Flying In From Left on Scroll -->
+          <!-- Left: Waffle & Floating Biscoff Cookies -->
           <div class="flying-waffle-stage" id="flyingWaffleStage">
             <div class="floating-cookie c1">Lotus Biscoff</div>
             <img class="main-flying-waffle" id="flyingWaffleImg" src="https://images.unsplash.com/photo-1562376552-0d160a2f238d?auto=format&fit=crop&w=1000&q=85" alt="Biscoff White Chocolate Waffle">
@@ -921,7 +1503,7 @@ img, video { max-width: 100%; display: block; }
       </div>
     </section>
 
-    <!-- 4. "MEET THE SHOW-STOPPER" SCROLL-PINNED DYNAMIC CATEGORY SWITCHER (IMAGES 7 & 8) -->
+    <!-- 4. "MEET THE SHOW-STOPPER" DYNAMIC CATEGORY SWITCHER -->
     <section class="showstopper-section" id="showstopperPin">
       <div class="wrap">
         <div class="showstopper-header">
@@ -938,7 +1520,7 @@ img, video { max-width: 100%; display: block; }
             </div>
           </div>
 
-          <!-- Right: Scroll-Synchronized Category List -->
+          <!-- Right: Category List -->
           <div>
             <ul class="showstopper-list" id="showstopperList">
               <li class="show-item active" data-index="0">
@@ -966,13 +1548,19 @@ img, video { max-width: 100%; display: block; }
                 <p class="show-item-desc">Signature waffle crisps, spreads, and ready-to-whisk premixes for your midnight kitchen cravings.</p>
               </li>
             </ul>
-            <p class="scroll-progress-hint">↓ Keep scrolling or click any category to switch ↓</p>
+
+            <!-- Mobile Active Description Card -->
+            <div class="showstopper-mobile-desc" id="showstopperMobileDesc">
+              Our signature warm, crispy pocket waffles folded around molten Belgian chocolate, Biscoff, and roasted nuts.
+            </div>
+
+            <p class="scroll-progress-hint">Tap any category to switch</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 5. REWARDS AT EVERY VISIT & FRANCHISE SLIDE-IN BANDS (REFERENCE IMAGE 1) -->
+    <!-- 5. REWARDS AT EVERY VISIT -->
     <section class="rewards-section">
       <div class="wrap split-showcase">
         <div class="slide-from-left">
@@ -989,61 +1577,41 @@ img, video { max-width: 100%; display: block; }
       </div>
     </section>
 
-    <section class="rewards-section" style="background:var(--cream)">
-      <div class="wrap split-showcase">
-        <div class="visual-collage-card slide-from-left">
-          <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=1000&q=85" alt="Franchise Storefront">
-        </div>
-        <div class="slide-from-right">
-          <span class="editorial-kicker">BECOME A</span>
-          <span class="editorial-script">franchise partner</span>
-          <p style="font-size:1.08rem;line-height:1.6;margin-bottom:1.8rem;max-width:44ch">
-            Compact 150–350 sq. ft. high-return QSR formats with 100% standardized premix supply chain, zero chef dependency, and rapid payback.
-          </p>
-          <button class="btn-pill" data-route="locations">Partner With Us →</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- 6. "FEED YOUR FEED" SOCIAL GRID -->
-    <section class="feed-section">
-      <div class="wrap">
-        <span class="editorial-kicker">FEED YOUR</span>
-        <span class="editorial-script" style="color:var(--milk)">feed</span>
-        <div class="feed-grid">
-          <div class="feed-card anim-pop"><img src="https://images.unsplash.com/photo-1562376552-0d160a2f238d?auto=format&fit=crop&w=700&q=80" alt="Feed 1"></div>
-          <div class="feed-card anim-pop"><img src="https://images.unsplash.com/photo-1598214886806-c87b84b7078b?auto=format&fit=crop&w=700&q=80" alt="Feed 2"></div>
-          <div class="feed-card anim-pop"><img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=700&q=80" alt="Feed 3"></div>
-          <div class="feed-card anim-pop"><img src="https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=700&q=80" alt="Feed 4"></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 7. ANGLED RIBBON DIVIDER ABOVE FOOTER (EXACT MATCH TO IMAGE 9) -->
-    <div class="tilted-ribbon-wrap">
+    <!-- Tilted Ribbon Ticker 2 -->
+    <div class="tilted-ribbon-wrap gold">
       <div class="ribbon-track" data-dir="1">
         <div class="ribbon-group">
-          <span>Waffle Crisps</span><i class="star-dot">✹</i>
-          <span>Waff-wich</span><i class="star-dot">✹</i>
-          <span>Sundaes</span><i class="star-dot">✹</i>
-          <span>Cakes</span><i class="star-dot">✹</i>
-          <span>Ice-cream Waff-wich</span><i class="star-dot">✹</i>
-          <span>Coffee</span><i class="star-dot">✹</i>
+          <span>Freshly Baked at 190°C</span><span class="star-dot">✦</span>
+          <span>100% Eggless Formula</span><span class="star-dot">✦</span>
+          <span>800+ Outlets Pan-India</span><span class="star-dot">✦</span>
+          <span>Made Fresh While You Watch</span><span class="star-dot">✦</span>
         </div>
         <div class="ribbon-group">
-          <span>Waffle Crisps</span><i class="star-dot">✹</i>
-          <span>Waff-wich</span><i class="star-dot">✹</i>
-          <span>Sundaes</span><i class="star-dot">✹</i>
-          <span>Cakes</span><i class="star-dot">✹</i>
-          <span>Ice-cream Waff-wich</span><i class="star-dot">✹</i>
-          <span>Coffee</span><i class="star-dot">✹</i>
+          <span>Freshly Baked at 190°C</span><span class="star-dot">✦</span>
+          <span>100% Eggless Formula</span><span class="star-dot">✦</span>
+          <span>800+ Outlets Pan-India</span><span class="star-dot">✦</span>
+          <span>Made Fresh While You Watch</span><span class="star-dot">✦</span>
         </div>
       </div>
     </div>
 
+    <!-- 6. SOCIAL REELS FEED: "FEED YOUR FEED" -->
+    <section class="feed-section">
+      <div class="wrap">
+        <span class="editorial-kicker">FEED YOUR</span>
+        <span class="editorial-script">feed</span>
+        <div class="feed-grid">
+          <div class="feed-card anim-pop"><img src="https://images.unsplash.com/photo-1562376552-0d160a2f238d?auto=format&fit=crop&w=600&q=85" alt="Instagram Waffle 1"></div>
+          <div class="feed-card anim-pop"><img src="https://images.unsplash.com/photo-1598214886806-c87b84b7078b?auto=format&fit=crop&w=600&q=85" alt="Instagram Waffle 2"></div>
+          <div class="feed-card anim-pop"><img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=600&q=85" alt="Instagram Waffle 3"></div>
+          <div class="feed-card anim-pop"><img src="https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&w=600&q=85" alt="Instagram Waffle 4"></div>
+        </div>
+      </div>
+    </section>
+
   </div>
 
-  <!-- ==================== PAGE 2: FULL MENU PAGE ==================== -->
+  <!-- ==================== PAGE 2: FULL MENU ==================== -->
   <div class="page-view" id="page-menu">
     <div class="page-pad wrap">
       <span class="editorial-kicker">OUR COMPLETE</span>
@@ -1072,7 +1640,7 @@ img, video { max-width: 100%; display: block; }
           </div>
           <button class="btn-pill" id="addCustomBtn" style="width:100%;justify-content:center;margin-top:1.2rem">+ Add Custom Waffle to Bag</button>
         </div>
-        <div style="background:var(--milk);padding:2rem;border-radius:28px;border:3px solid var(--cocoa)">
+        <div style="background:var(--milk);padding:1.5rem;border-radius:28px;border:3px solid var(--cocoa)">
           <h3>1. Select Fresh Batter (₹139)</h3>
           <div class="opt-grid" id="optBase"></div>
           <h3>2. Select Molten Pour (+₹30)</h3>
@@ -1080,6 +1648,17 @@ img, video { max-width: 100%; display: block; }
           <h3>3. Add Toppings (+₹25 each)</h3>
           <div class="opt-grid" id="optTops"></div>
         </div>
+      </div>
+
+      <!-- Mobile Sticky Action Bar -->
+      <div class="mobile-builder-sticky">
+        <div>
+          <div style="font-size:0.75rem;color:var(--batter);font-family:var(--mono);text-transform:uppercase">Live Total</div>
+          <strong id="mobileBuilderPrice" style="font-size:1.4rem;color:var(--milk)">₹194</strong>
+        </div>
+        <button class="btn-pill" id="mobileAddCustomBtn" style="background:var(--batter);color:var(--cocoa-deep);padding:0.6rem 1.2rem;font-size:0.92rem">
+          + Add to Bag
+        </button>
       </div>
     </div>
   </div>
@@ -1094,8 +1673,8 @@ img, video { max-width: 100%; display: block; }
           <img src="https://images.unsplash.com/photo-1562376552-0d160a2f238d?auto=format&fit=crop&w=1000&q=85" alt="Fresh Waffle Iron">
         </div>
         <div>
-          <h3 style="font-family:var(--serif-editorial);font-size:2.4rem;margin-bottom:1rem">Pioneering the On-The-Go Waff-wich</h3>
-          <p style="line-height:1.65;font-size:1.08rem;margin-bottom:1.2rem">
+          <h3 style="font-family:var(--serif-editorial);font-size:clamp(1.8rem,4vw,2.4rem);margin-bottom:1rem;line-height:1.1">Pioneering the On-The-Go Waff-wich</h3>
+          <p style="line-height:1.65;font-size:1.05rem;margin-bottom:1.2rem;color:var(--cocoa)">
             Every waffle is baked fresh at 190°C on custom cast-iron plates using our 100% vegetarian, eggless formulation. Engineered to stay crisp outside and warm inside without plates or cutlery.
           </p>
           <button class="btn-pill" data-route="menu">Order Now →</button>
@@ -1134,7 +1713,7 @@ img, video { max-width: 100%; display: block; }
   <aside class="cart-drawer">
     <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid var(--cocoa);padding-bottom:1rem">
       <h3 style="font-size:1.4rem;font-weight:800">Your Bag</h3>
-      <button id="closeCartBtn" style="font-weight:800;cursor:pointer">✕</button>
+      <button id="closeCartBtn" style="font-weight:800;font-size:1.2rem;cursor:pointer;padding:0.4rem">✕</button>
     </div>
     <div id="cartList" style="flex:1;overflow-y:auto;margin-block:1rem;display:grid;gap:0.75rem;align-content:start"></div>
     <div style="border-top:2px solid var(--cocoa);padding-top:1rem">
@@ -1179,21 +1758,21 @@ img, video { max-width: 100%; display: block; }
 
 <div class="toast" id="toast"></div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<!-- GSAP + ScrollTrigger CDN -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+
 <script>
-(function() {
-  'use strict';
+(() => {
   gsap.registerPlugin(ScrollTrigger);
 
-  /* ---------- 1. DUAL-VIDEO SEAMLESS CROSSFADE ENGINE (FIXES CHOPPY LOOP CUTS) ---------- */
+  /* ---------- 1. DUAL-BUFFER VIDEO SEAMLESS ENGINE ---------- */
   const vidA = document.getElementById('heroVideoA');
   const vidB = document.getElementById('heroVideoB');
   let activeVid = vidA;
   let standbyVid = vidB;
   let isCrossfading = false;
 
-  // Sync background color to exact rendered video pixel
   function syncBgColor(v) {
     try {
       const c = document.createElement('canvas');
@@ -1210,10 +1789,9 @@ img, video { max-width: 100%; display: block; }
   function monitorSeamlessLoop() {
     if (activeVid.duration && activeVid.currentTime > 0) {
       const remaining = activeVid.duration - activeVid.currentTime;
-      // Start smooth crossfade 0.65s before the video ends so it never jump-cuts
       if (remaining <= 0.65 && !isCrossfading) {
         isCrossfading = true;
-        standbyVid.currentTime = 0.85; // Start right as the chocolate pour stream touches the waffle
+        standbyVid.currentTime = 0.85;
         standbyVid.play().catch(() => {});
         standbyVid.style.opacity = '1';
         activeVid.style.opacity = '0';
@@ -1235,44 +1813,36 @@ img, video { max-width: 100%; display: block; }
     requestAnimationFrame(monitorSeamlessLoop);
   });
 
-  // 1-Click local file loader for live pitching
-  const uploadInput = document.getElementById('videoUploadInput');
-  if (uploadInput) {
-    uploadInput.addEventListener('change', e => {
-      const file = e.target.files && e.target.files[0];
-      if (!file) return;
-      const url = URL.createObjectURL(file);
-      vidA.src = url;
-      vidB.src = url;
-      vidA.play();
-      showToast('Loaded your Google Flow video with seamless crossfade!');
-    });
-  }
-
-  /* ---------- 2. "MEET THE SHOW-STOPPER" SCROLL-PINNED CATEGORY DATA (IMAGES 7 & 8) ---------- */
+  /* ---------- 2. SHOWSTOPPER CATEGORY DATA ---------- */
   const SHOWSTOPPERS = [
     {
       title: 'Waff-wiches',
+      desc: 'Our signature warm, crispy pocket waffles folded around molten Belgian chocolate, Biscoff, and roasted nuts.',
       img: 'https://images.unsplash.com/photo-1598214886806-c87b84b7078b?auto=format&fit=crop&w=900&q=85'
     },
     {
       title: 'Beverages',
+      desc: 'Handcrafted Belgian chocolate coolers, thick shakes, and artisan coffees brewed to pair with hot waffles.',
       img: 'https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&w=900&q=85'
     },
     {
       title: 'Sundaes',
+      desc: 'Quartered golden waffles stacked with gelato scoops, hot Belgian fudge drizzle, and crunchy waffle crisps.',
       img: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=900&q=85'
     },
     {
       title: 'Cakes',
+      desc: 'Layered waffle cakes smothered in dark cocoa ganache and hazelnut crunch for unforgettable celebrations.',
       img: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=900&q=85'
     },
     {
       title: 'Mini Waff-wiches',
+      desc: 'Bite-sized pocket waffles in assorted flavors—perfect for gifting, sharing, and dessert party platters.',
       img: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=900&q=85'
     },
     {
       title: 'Take-home Favourites',
+      desc: 'Signature packaged waffle crisps, molten chocolate jars, and ready-to-whisk waffle premixes for home cravings.',
       img: 'https://images.unsplash.com/photo-1562376552-0d160a2f238d?auto=format&fit=crop&w=900&q=85'
     }
   ];
@@ -1280,133 +1850,37 @@ img, video { max-width: 100%; display: block; }
   const showItems = document.querySelectorAll('.show-item');
   const showImg = document.getElementById('showstopperImg');
   const showCard = document.getElementById('showstopperCard');
+  const showMobileDesc = document.getElementById('showstopperMobileDesc');
   let activeShowIdx = 0;
 
   function activateShowstopper(idx) {
     if (idx === activeShowIdx || !SHOWSTOPPERS[idx]) return;
     activeShowIdx = idx;
-    showItems.forEach((el, i) => el.classList.toggle('active', i === idx));
+    showItems.forEach((el, i) => {
+      el.classList.toggle('active', i === idx);
+      if (i === idx) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }
+    });
 
     gsap.fromTo(showCard,
       { scale: 0.88, rotation: -6, opacity: 0.4 },
-      { scale: 1, rotation: 0, opacity: 1, duration: 0.5, ease: 'back.out(1.7)', overwrite: true }
+      { scale: 1, rotation: 0, opacity: 1, duration: 0.45, ease: 'back.out(1.7)', overwrite: true }
     );
     showImg.src = SHOWSTOPPERS[idx].img;
+    if (showMobileDesc) {
+      showMobileDesc.textContent = SHOWSTOPPERS[idx].desc;
+      gsap.fromTo(showMobileDesc, { opacity: 0.3, y: 6 }, { opacity: 1, y: 0, duration: 0.3 });
+    }
   }
 
   showItems.forEach(item => {
     item.addEventListener('click', () => activateShowstopper(Number(item.dataset.index)));
   });
 
-  /* ---------- 3. GSAP SCROLL-TRIGGER CHOREOGRAPHY ---------- */
+  /* ---------- 3. RESPONSIVE GSAP SCROLL-TRIGGER CHOREOGRAPHY ---------- */
   function initScrollAnimations() {
-    // A. "The Original Waff-wich" staggered reveal
-    gsap.from('.anim-slide-up', {
-      x: -80,
-      opacity: 0,
-      stagger: 0.15,
-      duration: 0.9,
-      ease: 'power3.out',
-      scrollTrigger: { trigger: '.original-section', start: 'top 78%' }
-    });
-
-    // B. "India's No 1 Waffle Brand" — Headlines + Waffle Flying In From Left
-    gsap.from('.slide-word-left', {
-      x: -140,
-      opacity: 0,
-      duration: 1,
-      ease: 'expo.out',
-      scrollTrigger: { trigger: '#no1Section', start: 'top 75%' }
-    });
-    gsap.from('.slide-word-right', {
-      x: 140,
-      opacity: 0,
-      duration: 1,
-      ease: 'expo.out',
-      scrollTrigger: { trigger: '#no1Section', start: 'top 75%' }
-    });
-    gsap.from('.slide-word-up', {
-      y: 80,
-      opacity: 0,
-      duration: 1,
-      delay: 0.15,
-      ease: 'expo.out',
-      scrollTrigger: { trigger: '#no1Section', start: 'top 75%' }
-    });
-
-    // Waffle & Floating Cookies flying in from the left as you scroll
-    gsap.fromTo('#flyingWaffleImg',
-      { x: -320, y: 90, rotation: -45, scale: 0.72, opacity: 0 },
-      {
-        x: 0, y: 0, rotation: -14, scale: 1, opacity: 1,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: '#no1Section',
-          start: 'top 80%',
-          end: 'center 52%',
-          scrub: 0.8
-        }
-      }
-    );
-
-    gsap.from('.floating-cookie', {
-      x: -180,
-      scale: 0,
-      rotation: -60,
-      stagger: 0.12,
-      duration: 0.9,
-      ease: 'back.out(2)',
-      scrollTrigger: { trigger: '#flyingWaffleStage', start: 'top 75%' }
-    });
-
-    // C. Scroll-Pinned "Meet The Show-stopper" Section (Cycles categories as you scroll down)
-    ScrollTrigger.create({
-      trigger: '#showstopperPin',
-      start: 'top top',
-      end: '+=220%',
-      pin: true,
-      scrub: 0.5,
-      onUpdate(self) {
-        const idx = Math.min(
-          SHOWSTOPPERS.length - 1,
-          Math.floor(self.progress * SHOWSTOPPERS.length)
-        );
-        activateShowstopper(idx);
-      }
-    });
-
-    // D. Slide-in Rewards & Franchise Cards
-    gsap.utils.toArray('.slide-from-left').forEach(el => {
-      gsap.from(el, {
-        x: -120,
-        opacity: 0,
-        duration: 0.95,
-        ease: 'power3.out',
-        scrollTrigger: { trigger: el, start: 'top 82%' }
-      });
-    });
-    gsap.utils.toArray('.slide-from-right').forEach(el => {
-      gsap.from(el, {
-        x: 120,
-        opacity: 0,
-        duration: 0.95,
-        ease: 'power3.out',
-        scrollTrigger: { trigger: el, start: 'top 82%' }
-      });
-    });
-
-    // E. Social Feed Pop-In
-    gsap.from('.anim-pop', {
-      y: 70,
-      scale: 0.88,
-      opacity: 0,
-      stagger: 0.12,
-      duration: 0.8,
-      ease: 'back.out(1.6)',
-      scrollTrigger: { trigger: '.feed-section', start: 'top 78%' }
-    });
-
-    // F. Continuous Tilted Ribbon Tickers
+    // Tilted Ribbon Tickers (common)
     gsap.utils.toArray('.ribbon-track').forEach(track => {
       const dir = Number(track.dataset.dir || -1);
       gsap.fromTo(track,
@@ -1414,10 +1888,98 @@ img, video { max-width: 100%; display: block; }
         { xPercent: dir < 0 ? -50 : 0, duration: 20, ease: 'none', repeat: -1 }
       );
     });
+
+    const mm = gsap.matchMedia();
+
+    // DESKTOP (> 860px)
+    mm.add("(min-width: 861px)", () => {
+      gsap.from('.anim-slide-up', {
+        x: -80, opacity: 0, stagger: 0.15, duration: 0.9, ease: 'power3.out',
+        scrollTrigger: { trigger: '.original-section', start: 'top 78%' }
+      });
+      gsap.from('.slide-word-left', {
+        x: -140, opacity: 0, duration: 1, ease: 'expo.out',
+        scrollTrigger: { trigger: '#no1Section', start: 'top 75%' }
+      });
+      gsap.from('.slide-word-right', {
+        x: 140, opacity: 0, duration: 1, ease: 'expo.out',
+        scrollTrigger: { trigger: '#no1Section', start: 'top 75%' }
+      });
+      gsap.from('.slide-word-up', {
+        y: 80, opacity: 0, duration: 1, delay: 0.15, ease: 'expo.out',
+        scrollTrigger: { trigger: '#no1Section', start: 'top 75%' }
+      });
+      gsap.fromTo('#flyingWaffleImg',
+        { x: -320, y: 90, rotation: -45, scale: 0.72, opacity: 0 },
+        {
+          x: 0, y: 0, rotation: -14, scale: 1, opacity: 1, ease: 'power3.out',
+          scrollTrigger: { trigger: '#no1Section', start: 'top 80%', end: 'center 52%', scrub: 0.8 }
+        }
+      );
+      gsap.from('.floating-cookie', {
+        x: -180, scale: 0, rotation: -60, stagger: 0.12, duration: 0.9, ease: 'back.out(2)',
+        scrollTrigger: { trigger: '#flyingWaffleStage', start: 'top 75%' }
+      });
+
+      // Desktop Scroll-Pinned Showstopper
+      ScrollTrigger.create({
+        trigger: '#showstopperPin',
+        start: 'top top',
+        end: '+=220%',
+        pin: true,
+        scrub: 0.5,
+        onUpdate(self) {
+          const idx = Math.min(SHOWSTOPPERS.length - 1, Math.floor(self.progress * SHOWSTOPPERS.length));
+          activateShowstopper(idx);
+        }
+      });
+
+      gsap.utils.toArray('.slide-from-left').forEach(el => {
+        gsap.from(el, { x: -120, opacity: 0, duration: 0.95, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 82%' } });
+      });
+      gsap.utils.toArray('.slide-from-right').forEach(el => {
+        gsap.from(el, { x: 120, opacity: 0, duration: 0.95, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 82%' } });
+      });
+      gsap.from('.anim-pop', {
+        y: 70, scale: 0.88, opacity: 0, stagger: 0.12, duration: 0.8, ease: 'back.out(1.6)',
+        scrollTrigger: { trigger: '.feed-section', start: 'top 78%' }
+      });
+    });
+
+    // MOBILE (<= 860px)
+    mm.add("(max-width: 860px)", () => {
+      // Natural vertical slide reveals (0 horizontal blowout)
+      gsap.from('.anim-slide-up', {
+        y: 35, opacity: 0, stagger: 0.12, duration: 0.75, ease: 'power3.out',
+        scrollTrigger: { trigger: '.original-section', start: 'top 85%' }
+      });
+      gsap.from('#no1Section .no1-headline', {
+        y: 35, opacity: 0, duration: 0.8, ease: 'power3.out',
+        scrollTrigger: { trigger: '#no1Section', start: 'top 85%' }
+      });
+      gsap.fromTo('#flyingWaffleImg',
+        { y: 50, scale: 0.88, opacity: 0 },
+        {
+          y: 0, scale: 1, opacity: 1, ease: 'power2.out',
+          scrollTrigger: { trigger: '#flyingWaffleStage', start: 'top 85%', end: 'center 60%', scrub: 0.6 }
+        }
+      );
+      gsap.from('.floating-cookie', {
+        scale: 0, opacity: 0, duration: 0.6, stagger: 0.1, ease: 'back.out(1.8)',
+        scrollTrigger: { trigger: '#flyingWaffleStage', start: 'top 82%' }
+      });
+      gsap.utils.toArray('.slide-from-left, .slide-from-right').forEach(el => {
+        gsap.from(el, { y: 40, opacity: 0, duration: 0.75, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 88%' } });
+      });
+      gsap.from('.anim-pop', {
+        y: 35, scale: 0.92, opacity: 0, stagger: 0.08, duration: 0.65, ease: 'back.out(1.4)',
+        scrollTrigger: { trigger: '.feed-section', start: 'top 85%' }
+      });
+    });
   }
   initScrollAnimations();
 
-  /* ---------- 4. FULL MENU PAGE & CART SYSTEM ---------- */
+  /* ---------- 4. FULL MENU & CATEGORIES ---------- */
   const MENU_ITEMS = [
     { id: 'w1', name: 'Belgian Dark Choc Overload', cat: 'waffwich', price: 189, img: 'https://images.unsplash.com/photo-1598214886806-c87b84b7078b?auto=format&fit=crop&w=800&q=85', desc: 'Deep-pocket cocoa waffle folded with warm 54% Belgian dark chocolate ganache.' },
     { id: 'w2', name: 'Lotus Biscoff Caramel Crunch', cat: 'waffwich', price: 219, img: 'https://images.unsplash.com/photo-1562376552-0d160a2f238d?auto=format&fit=crop&w=800&q=85', desc: 'Crisp golden waff-wich layered with melted Lotus Biscoff spread & speculoos crunch.' },
@@ -1433,11 +1995,11 @@ img, video { max-width: 100%; display: block; }
     grid.innerHTML = items.map(item => `
       <article class="menu-card">
         <div class="menu-card-img"><img src="${item.img}" alt="${item.name}"></div>
-        <h3 style="font-size:1.4rem;font-weight:800">${item.name}</h3>
-        <p style="color:var(--ink-muted);font-size:0.94rem;flex:1">${item.desc}</p>
+        <h3 style="font-size:1.35rem;font-weight:800;color:var(--cocoa)">${item.name}</h3>
+        <p style="color:var(--ink-muted);font-size:0.92rem;flex:1;line-height:1.45">${item.desc}</p>
         <div style="display:flex;justify-content:space-between;align-items:center;padding-top:0.8rem;border-top:1px dashed rgba(58,29,18,0.2)">
-          <strong style="font-size:1.3rem">₹${item.price}</strong>
-          <button class="btn-pill" data-add="${item.id}" style="padding:0.5rem 1.1rem;font-size:0.85rem">+ Add</button>
+          <strong style="font-size:1.3rem;color:var(--cocoa-deep)">₹${item.price}</strong>
+          <button class="btn-pill" data-add="${item.id}" style="padding:0.5rem 1.15rem;font-size:0.85rem">+ Add</button>
         </div>
       </article>
     `).join('');
@@ -1452,19 +2014,48 @@ img, video { max-width: 100%; display: block; }
     renderMenu(btn.dataset.cat);
   });
 
-  /* ---------- 5. MULTI-PAGE ROUTER ---------- */
+  /* ---------- 5. MULTI-PAGE ROUTER & MOBILE DRAWER ---------- */
+  const mobileNavBackdrop = document.getElementById('mobileNavBackdrop');
+  const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+  const mobileNavClose = document.getElementById('mobileNavClose');
+
+  function openMobileNav() {
+    if (mobileNavBackdrop) mobileNavBackdrop.classList.add('open');
+  }
+  function closeMobileNav() {
+    if (mobileNavBackdrop) mobileNavBackdrop.classList.remove('open');
+  }
+
+  if (mobileMenuBtn) mobileMenuBtn.addEventListener('click', openMobileNav);
+  if (mobileNavClose) mobileNavClose.addEventListener('click', closeMobileNav);
+  if (mobileNavBackdrop) {
+    mobileNavBackdrop.addEventListener('click', e => {
+      if (e.target === mobileNavBackdrop) closeMobileNav();
+    });
+  }
+
   function navigateTo(route) {
+    closeMobileNav();
     document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
     const target = document.getElementById('page-' + route);
     if (!target) return;
     target.classList.add('active');
 
-    document.querySelectorAll('.nav-btn').forEach(b => {
+    document.querySelectorAll('.nav-btn, .mobile-nav-link').forEach(b => {
       b.classList.toggle('active', b.dataset.route === route);
     });
 
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    setTimeout(() => ScrollTrigger.refresh(), 100);
+    window.scrollTo(0, 0);
+    setTimeout(() => ScrollTrigger.refresh(), 50);
+  }
+  window.navigateTo = navigateTo;
+  window.addEventListener('hashchange', () => {
+    const h = location.hash.replace('#', '');
+    if (h) navigateTo(h);
+  });
+  if (location.hash) {
+    const h = location.hash.replace('#', '');
+    if (h) setTimeout(() => navigateTo(h), 100);
   }
 
   document.addEventListener('click', e => {
@@ -1494,6 +2085,8 @@ img, video { max-width: 100%; display: block; }
 
     const total = 139 + 30 + bState.tops.length * 25;
     document.getElementById('builderPrice').textContent = '₹' + total;
+    const mbPrice = document.getElementById('mobileBuilderPrice');
+    if (mbPrice) mbPrice.textContent = '₹' + total;
     document.getElementById('builderSummary').textContent = `${BASES[bState.base]} • ${SAUCES[bState.sauce]}`;
   }
   updateBuilder();
@@ -1512,17 +2105,20 @@ img, video { max-width: 100%; display: block; }
     updateBuilder();
   });
 
-  /* ---------- 7. BAG DRAWER ---------- */
+  /* ---------- 7. BAG DRAWER & TOAST ---------- */
   const cart = [{ name: 'Belgian Dark Choc Overload', price: 189 }];
   function renderCart() {
-    document.getElementById('cartCount').textContent = cart.length;
+    document.querySelectorAll('.cartCount, #cartCount').forEach(el => el.textContent = cart.length);
     let sum = 0;
     document.getElementById('cartList').innerHTML = cart.map((item, idx) => {
       sum += item.price;
       return `
-        <div style="display:flex;justify-content:space-between;background:var(--milk);padding:0.8rem;border-radius:14px;border:1.5px solid var(--cocoa)">
-          <div><strong>${item.name}</strong><div style="font-size:0.8rem">₹${item.price}</div></div>
-          <button data-rem="${idx}" style="color:var(--terracotta);font-weight:800;cursor:pointer">✕</button>
+        <div style="display:flex;justify-content:space-between;align-items:center;background:var(--milk);padding:0.85rem 1rem;border-radius:16px;border:1.5px solid var(--cocoa)">
+          <div>
+            <strong style="font-size:0.95rem;color:var(--cocoa-deep)">${item.name}</strong>
+            <div style="font-size:0.85rem;color:var(--terracotta);font-weight:700">₹${item.price}</div>
+          </div>
+          <button data-rem="${idx}" style="color:var(--terracotta);font-weight:800;font-size:1.1rem;cursor:pointer;padding:0.3rem">✕</button>
         </div>
       `;
     }).join('');
@@ -1547,19 +2143,31 @@ img, video { max-width: 100%; display: block; }
     }
   });
 
-  document.getElementById('addCustomBtn').addEventListener('click', () => {
+  function addCustomWaffle() {
     const total = 139 + 30 + bState.tops.length * 25;
     cart.push({ name: `Custom ${BASES[bState.base]} Waff-wich`, price: total });
     renderCart();
     showToast('Added Custom Waff-wich to Bag!');
-  });
+  }
 
-  const backdrop = document.getElementById('cartBackdrop');
-  document.getElementById('openCartBtn').addEventListener('click', () => backdrop.classList.add('open'));
-  document.getElementById('closeCartBtn').addEventListener('click', () => backdrop.classList.remove('open'));
+  document.getElementById('addCustomBtn').addEventListener('click', addCustomWaffle);
+  const mbAdd = document.getElementById('mobileAddCustomBtn');
+  if (mbAdd) mbAdd.addEventListener('click', addCustomWaffle);
+
+  const cartBackdrop = document.getElementById('cartBackdrop');
+  document.querySelectorAll('.openCartBtn, #openCartBtn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      closeMobileNav();
+      cartBackdrop.classList.add('open');
+    });
+  });
+  document.getElementById('closeCartBtn').addEventListener('click', () => cartBackdrop.classList.remove('open'));
+  cartBackdrop.addEventListener('click', e => {
+    if (e.target === cartBackdrop) cartBackdrop.classList.remove('open');
+  });
   document.getElementById('checkoutBtn').addEventListener('click', () => {
-    backdrop.classList.remove('open');
-    showToast('Demo Order Placed!');
+    cartBackdrop.classList.remove('open');
+    showToast('Demo Order Placed Successfully!');
   });
 
   let tTimer;
